@@ -144,51 +144,51 @@ def load_backbone(net, ckpt_path, args):
 
     param_dict = load_checkpoint(ckpt_path)
     net_backbone_prefix = 'encoder'
-    darknet_backbone_prefix = 'backbone'
+    effinet_backbone_prefix = 'backbone'
     find_param = []
     not_found_param = []
     net.init_parameters_data()
     for name, cell in net.cells_and_names():
-        if name.startswith(yolo_backbone_prefix):
-            name = name.replace(yolo_backbone_prefix, darknet_backbone_prefix)
+        if name.startswith(net_backbone_prefix):
+            name = name.replace(net_backbone_prefix, effinet_backbone_prefix)
             if isinstance(cell, (nn.Conv2d, nn.Dense)):
-                darknet_weight = '{}.weight'.format(name)
-                darknet_bias = '{}.bias'.format(name)
-                if darknet_weight in param_dict:
-                    cell.weight.set_data(param_dict[darknet_weight].data)
-                    find_param.append(darknet_weight)
+                effinet_weight = '{}.weight'.format(name)
+                effinet_bias = '{}.bias'.format(name)
+                if effinet_weight in param_dict:
+                    cell.weight.set_data(param_dict[effinet_weight].data)
+                    find_param.append(effinet_weight)
                 else:
-                    not_found_param.append(darknet_weight)
-                if darknet_bias in param_dict:
-                    cell.bias.set_data(param_dict[darknet_bias].data)
-                    find_param.append(darknet_bias)
+                    not_found_param.append(effinet_weight)
+                if effinet_bias in param_dict:
+                    cell.bias.set_data(param_dict[effinet_bias].data)
+                    find_param.append(effinet_bias)
                 else:
-                    not_found_param.append(darknet_bias)
+                    not_found_param.append(effinet_bias)
             elif isinstance(cell, (nn.BatchNorm2d, nn.BatchNorm1d)):
-                darknet_moving_mean = '{}.moving_mean'.format(name)
-                darknet_moving_variance = '{}.moving_variance'.format(name)
-                darknet_gamma = '{}.gamma'.format(name)
-                darknet_beta = '{}.beta'.format(name)
-                if darknet_moving_mean in param_dict:
-                    cell.moving_mean.set_data(param_dict[darknet_moving_mean].data)
-                    find_param.append(darknet_moving_mean)
+                effinet_moving_mean = '{}.moving_mean'.format(name)
+                effinet_moving_variance = '{}.moving_variance'.format(name)
+                effinet_gamma = '{}.gamma'.format(name)
+                effinet_beta = '{}.beta'.format(name)
+                if effinet_moving_mean in param_dict:
+                    cell.moving_mean.set_data(param_dict[effinet_moving_mean].data)
+                    find_param.append(effinet_moving_mean)
                 else:
-                    not_found_param.append(darknet_moving_mean)
-                if darknet_moving_variance in param_dict:
-                    cell.moving_variance.set_data(param_dict[darknet_moving_variance].data)
-                    find_param.append(darknet_moving_variance)
+                    not_found_param.append(effinet_moving_mean)
+                if effinet_moving_variance in param_dict:
+                    cell.moving_variance.set_data(param_dict[effinet_moving_variance].data)
+                    find_param.append(effinet_moving_variance)
                 else:
-                    not_found_param.append(darknet_moving_variance)
-                if darknet_gamma in param_dict:
-                    cell.gamma.set_data(param_dict[darknet_gamma].data)
-                    find_param.append(darknet_gamma)
+                    not_found_param.append(effinet_moving_variance)
+                if effinet_gamma in param_dict:
+                    cell.gamma.set_data(param_dict[effinet_gamma].data)
+                    find_param.append(effinet_gamma)
                 else:
-                    not_found_param.append(darknet_gamma)
-                if darknet_beta in param_dict:
-                    cell.beta.set_data(param_dict[darknet_beta].data)
-                    find_param.append(darknet_beta)
+                    not_found_param.append(effinet_gamma)
+                if effinet_beta in param_dict:
+                    cell.beta.set_data(param_dict[effinet_beta].data)
+                    find_param.append(effinet_beta)
                 else:
-                    not_found_param.append(darknet_beta)
+                    not_found_param.append(effinet_beta)
 
     print('================found_param {}========='.format(len(find_param)))
     print(find_param)
@@ -214,7 +214,7 @@ def load_effiunet_params(args, network):
             #     continue
             if key.startswith('moments.'):
                 continue
-            elif key.startswith('yolo_network.'):
+            elif key.startswith('effiunet_network.'):
                 param_dict_new[key[13:]] = values
                 print('in resume {}'.format(key))
             else:
@@ -223,7 +223,7 @@ def load_effiunet_params(args, network):
 
         print('resume finished')
         load_param_into_net(network, param_dict_new)
-        print('load_model {} success'.format(args.resume_yolov4))
+        print('load_model {} success'.format(args.resume_effiunetv4))
 
 def default_recurisive_init(custom_cell):
     """Initialize parameter."""
